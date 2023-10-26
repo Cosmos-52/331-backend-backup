@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active:
+      - db
+  datasource:
+    url: jdbc:mysql://localhost:3308/331_backend_db?createDatabaseIfNotExist=true&autoReconnect=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+  servelet:
+    multipart:
+      max-file-size: 30MB
+
+application:
+  security:
+    jwt:
+      secret-key: A3B5C7D9E123F567891234G5H6J7K8L9M0NOP2QR4ST5UV6W7XYZ8
+      expiration: 86400000 # 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
