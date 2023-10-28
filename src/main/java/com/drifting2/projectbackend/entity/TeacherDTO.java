@@ -15,11 +15,12 @@ import lombok.NoArgsConstructor;
 public class TeacherDTO {
     Long id;
     String teacherId;
+    String teacherPw;
     String academicPosition;
     String firstname;
     String surname;
     String department;
     @Builder.Default
-    List<TeacherStudentDTO> advisee = new ArrayList<>();;;
+    List<TeacherStudentDTO> advisee = new ArrayList<>();
     List<String> images;
 }

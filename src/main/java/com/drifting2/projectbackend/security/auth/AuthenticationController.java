@@ -26,6 +26,12 @@ public class AuthenticationController {
     return ResponseEntity.ok(response);
   }
 
+  @PostMapping("/adregister")
+  public ResponseEntity<AuthenticationResponse> teacherregister(@RequestBody RegisterTeacherRequest teacherRequest) {
+    AuthenticationResponse response = userService.teacherregister(teacherRequest);  // 使用UserService
+    return ResponseEntity.ok(response);
+  }
+
   @PostMapping("/authenticate")
   public ResponseEntity<AuthenticationResponse> authenticate(
           @RequestBody AuthenticationRequest request

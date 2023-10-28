@@ -26,6 +26,7 @@ public class Teacher {
     @EqualsAndHashCode.Exclude
     Long id;
     String teacherId;
+    String teacherPw;
     String academicPosition;
     String firstname;
     String surname;
@@ -33,7 +34,7 @@ public class Teacher {
     String profileImage;
     @Builder.Default
     @OneToMany(mappedBy = "advisor")
-    List<Student> advisee = new ArrayList<>();;
+    List<Student> advisee = new ArrayList<>();
     @ElementCollection
     List<String> images;
 }

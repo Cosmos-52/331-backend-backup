@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class StudentTeacherDTO {
     Long id;
     String teacherId;
+    String teacherPw;
     String academicPosition;
     String firstname;
     String surname;
