@@ -1,5 +1,6 @@
 package com.drifting2.projectbackend.security.auth;
 
+import com.drifting2.projectbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ import java.io.IOException;
 public class AuthenticationController {
 
   private final AuthenticationService service;
+  private final UserService userService;
 
   @PostMapping("/register")
-  public ResponseEntity<AuthenticationResponse> register(
-          @RequestBody RegisterRequest request
-  ) {
-    return ResponseEntity.ok(service.register(request));
+  public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+    AuthenticationResponse response = userService.register(request);  // 使用UserService
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/authenticate")

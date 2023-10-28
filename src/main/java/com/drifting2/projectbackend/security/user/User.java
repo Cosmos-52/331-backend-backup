@@ -1,6 +1,7 @@
 package com.drifting2.projectbackend.security.user;
 
 import com.drifting2.projectbackend.entity.Roles;
+import com.drifting2.projectbackend.entity.Student;
 import com.drifting2.projectbackend.security.token.Token;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,6 +49,12 @@ public class User implements UserDetails {
 
   @OneToOne(mappedBy = "user")
    Roles rolesU;
+
+  // User.java
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "student_id", referencedColumnName = "id")
+  private Student student;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());

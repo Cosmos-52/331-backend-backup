@@ -22,8 +22,8 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-10-25T22:32:46+0700",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
+    date = "2023-10-28T17:12:20+0700",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 18 (Oracle Corporation)"
 )
 public class LabMapperImpl implements LabMapper {
 
