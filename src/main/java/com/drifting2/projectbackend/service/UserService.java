@@ -68,7 +68,7 @@ public class UserService {
 
     public AuthenticationResponse teacherregister(RegisterTeacherRequest request) {
         User user = User.builder()
-                .username(request.getTeacherId())  
+                .username(request.getTeacherId())
                 .password(passwordEncoder.encode(request.getTeacherPw()))
                 .roles(List.of(Role.ROLE_FASTFIT))
                 .build();
