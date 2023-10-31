@@ -2,12 +2,6 @@ package com.drifting2.projectbackend.util;
 
 import com.drifting2.projectbackend.entity.Announcement;
 import com.drifting2.projectbackend.entity.AnnouncementDTO;
-import com.drifting2.projectbackend.entity.CommentHistory;
-import com.drifting2.projectbackend.entity.CommentHistoryDTO;
-import com.drifting2.projectbackend.entity.CommentHistoryMessageDTO;
-import com.drifting2.projectbackend.entity.CommentMessage;
-import com.drifting2.projectbackend.entity.CommentMessageDTO;
-import com.drifting2.projectbackend.entity.CommentMessageHistoryDTO;
 import com.drifting2.projectbackend.entity.Roles;
 import com.drifting2.projectbackend.entity.RolesDTO;
 import com.drifting2.projectbackend.entity.Student;
@@ -22,8 +16,8 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-10-28T17:12:20+0700",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 18 (Oracle Corporation)"
+    date = "2023-10-31T11:32:15+0700",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 18.0.2 (Amazon.com Inc.)"
 )
 public class LabMapperImpl implements LabMapper {
 
@@ -75,6 +69,7 @@ public class LabMapperImpl implements LabMapper {
 
         teacherDTO.id( teacher.getId() );
         teacherDTO.teacherId( teacher.getTeacherId() );
+        teacherDTO.teacherPw( teacher.getTeacherPw() );
         teacherDTO.academicPosition( teacher.getAcademicPosition() );
         teacherDTO.firstname( teacher.getFirstname() );
         teacherDTO.surname( teacher.getSurname() );
@@ -97,67 +92,6 @@ public class LabMapperImpl implements LabMapper {
         List<TeacherDTO> list = new ArrayList<TeacherDTO>( teachers.size() );
         for ( Teacher teacher : teachers ) {
             list.add( getTeacherDTO( teacher ) );
-        }
-
-        return list;
-    }
-
-    @Override
-    public CommentMessageDTO getCommentMessageDTO(CommentMessage commentMessage) {
-        if ( commentMessage == null ) {
-            return null;
-        }
-
-        CommentMessageDTO.CommentMessageDTOBuilder commentMessageDTO = CommentMessageDTO.builder();
-
-        commentMessageDTO.id( commentMessage.getId() );
-        commentMessageDTO.from( commentHistoryToCommentMessageHistoryDTO( commentMessage.getFrom() ) );
-        commentMessageDTO.message( commentMessage.getMessage() );
-        commentMessageDTO.timeSent( commentMessage.getTimeSent() );
-        commentMessageDTO.sentFromAdvisor( commentMessage.getSentFromAdvisor() );
-
-        return commentMessageDTO.build();
-    }
-
-    @Override
-    public List<CommentMessageDTO> getCommentMessageDTO(List<CommentMessage> commentMessage) {
-        if ( commentMessage == null ) {
-            return null;
-        }
-
-        List<CommentMessageDTO> list = new ArrayList<CommentMessageDTO>( commentMessage.size() );
-        for ( CommentMessage commentMessage1 : commentMessage ) {
-            list.add( getCommentMessageDTO( commentMessage1 ) );
-        }
-
-        return list;
-    }
-
-    @Override
-    public CommentHistoryDTO getCommentHistoryDTO(CommentHistory commentHistory) {
-        if ( commentHistory == null ) {
-            return null;
-        }
-
-        CommentHistoryDTO.CommentHistoryDTOBuilder commentHistoryDTO = CommentHistoryDTO.builder();
-
-        commentHistoryDTO.id( commentHistory.getId() );
-        commentHistoryDTO.history( commentMessageListToCommentHistoryMessageDTOList( commentHistory.getHistory() ) );
-        commentHistoryDTO.adviseeId( commentHistory.getAdviseeId() );
-        commentHistoryDTO.advisorId( commentHistory.getAdvisorId() );
-
-        return commentHistoryDTO.build();
-    }
-
-    @Override
-    public List<CommentHistoryDTO> getCommentHistoryDTO(List<CommentHistory> commentHistory) {
-        if ( commentHistory == null ) {
-            return null;
-        }
-
-        List<CommentHistoryDTO> list = new ArrayList<CommentHistoryDTO>( commentHistory.size() );
-        for ( CommentHistory commentHistory1 : commentHistory ) {
-            list.add( getCommentHistoryDTO( commentHistory1 ) );
         }
 
         return list;
@@ -234,6 +168,7 @@ public class LabMapperImpl implements LabMapper {
 
         studentTeacherDTO.id( teacher.getId() );
         studentTeacherDTO.teacherId( teacher.getTeacherId() );
+        studentTeacherDTO.teacherPw( teacher.getTeacherPw() );
         studentTeacherDTO.academicPosition( teacher.getAcademicPosition() );
         studentTeacherDTO.firstname( teacher.getFirstname() );
         studentTeacherDTO.surname( teacher.getSurname() );
@@ -271,48 +206,6 @@ public class LabMapperImpl implements LabMapper {
         List<TeacherStudentDTO> list1 = new ArrayList<TeacherStudentDTO>( list.size() );
         for ( Student student : list ) {
             list1.add( studentToTeacherStudentDTO( student ) );
-        }
-
-        return list1;
-    }
-
-    protected CommentMessageHistoryDTO commentHistoryToCommentMessageHistoryDTO(CommentHistory commentHistory) {
-        if ( commentHistory == null ) {
-            return null;
-        }
-
-        CommentMessageHistoryDTO.CommentMessageHistoryDTOBuilder commentMessageHistoryDTO = CommentMessageHistoryDTO.builder();
-
-        commentMessageHistoryDTO.id( commentHistory.getId() );
-        commentMessageHistoryDTO.adviseeId( commentHistory.getAdviseeId() );
-        commentMessageHistoryDTO.advisorId( commentHistory.getAdvisorId() );
-
-        return commentMessageHistoryDTO.build();
-    }
-
-    protected CommentHistoryMessageDTO commentMessageToCommentHistoryMessageDTO(CommentMessage commentMessage) {
-        if ( commentMessage == null ) {
-            return null;
-        }
-
-        CommentHistoryMessageDTO.CommentHistoryMessageDTOBuilder commentHistoryMessageDTO = CommentHistoryMessageDTO.builder();
-
-        commentHistoryMessageDTO.id( commentMessage.getId() );
-        commentHistoryMessageDTO.message( commentMessage.getMessage() );
-        commentHistoryMessageDTO.timeSent( commentMessage.getTimeSent() );
-        commentHistoryMessageDTO.sentFromAdvisor( commentMessage.getSentFromAdvisor() );
-
-        return commentHistoryMessageDTO.build();
-    }
-
-    protected List<CommentHistoryMessageDTO> commentMessageListToCommentHistoryMessageDTOList(List<CommentMessage> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<CommentHistoryMessageDTO> list1 = new ArrayList<CommentHistoryMessageDTO>( list.size() );
-        for ( CommentMessage commentMessage : list ) {
-            list1.add( commentMessageToCommentHistoryMessageDTO( commentMessage ) );
         }
 
         return list1;

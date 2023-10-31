@@ -30,7 +30,7 @@ public class TeacherController {
                                             @RequestParam(value = "_page", required = false) Integer page,
                                             @RequestParam(value = "title", required = false) String title) {
                                                 
-        perPage = perPage == null ? 3 : perPage;
+        perPage = perPage == null ? teacherService.getTeacherSize() : perPage;
         page = page == null ? 1 : page;
         Page<Teacher> pageOutput;
         if (title == null) {

@@ -2,6 +2,8 @@ package com.drifting2.projectbackend.config;
 
 import com.drifting2.projectbackend.entity.*;
 import com.drifting2.projectbackend.repository.*;
+import com.drifting2.projectbackend.security.auth.AuthenticationResponse;
+import com.drifting2.projectbackend.security.config.JwtService;
 import com.drifting2.projectbackend.security.user.Role;
 import com.drifting2.projectbackend.security.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +16,91 @@ import org.springframework.stereotype.Component;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import com.drifting2.projectbackend.security.user.User;
+import com.drifting2.projectbackend.security.user.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
-    @Autowired
 
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     final StudentRepository studentRepository;
     final AnnouncementRepository announcementRepository;
     final TeacherRepository teacherRepository;
-    final CommentMessageRepository commentMessageRepository;
-    final CommentHistoryRepository commentHistoryRepository;
+
+    @Autowired
     final RolesRepository rolesRepository;
+
+    @Autowired
     final UserRepository userRepository;
+
+
+    public AuthenticationResponse StudentBuilder(String studentId, String studentPw, String firstname, String surname, String department, List<String> images) {
+        User user = User.builder()
+                .username(studentId)  // Set username as studentId
+                .password(passwordEncoder.encode(studentPw))
+                .roles(List.of(Role.ROLE_DISTRIBUTOR))
+                .build();
+        var savedUser = userRepository.save(user);
+
+        Student student = Student.builder()
+                .studentId(studentId)
+                .studentPw(studentPw)
+                .firstname(firstname)
+                .surname(surname)
+                .department(department)
+                .advisor(null)
+                .images(images)
+                .build();
+        studentRepository.save(student);
+
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .username(studentId)  // Set username in the response
+                .roles(savedUser.getRoles().stream().map(Role::name).collect(Collectors.toList()))  // Set roles in the response
+                .build();
+    }
+
+    public AuthenticationResponse TeacherBuilder(String teacherId, String teacherPw,String academicPosition ,String firstname, String surname, String department, List<String> images) {
+        User user = User.builder()
+                .username(teacherId)
+                .password(passwordEncoder.encode(teacherPw))
+                .roles(List.of(Role.ROLE_FASTFIT))
+                .build();
+        var savedUser2 = userRepository.save(user);
+
+        Teacher teacher = Teacher.builder()
+                .teacherId(teacherId)
+                .teacherPw(teacherPw)
+                .academicPosition(academicPosition)
+                .firstname(firstname)
+                .surname(surname)
+                .department(department)
+                .images(images)
+                .build();
+
+        teacherRepository.save(teacher);
+
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .username(teacherId)  // Set username in the response
+                .roles(savedUser2.getRoles().stream().map(Role::name).collect(Collectors.toList()))  // Set roles in the response
+                .build();
+    }
 
     @Override
     @Transactional
@@ -106,113 +177,79 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
 
 
         Teacher t1, t2, t3;
-        t1 = teacherRepository.save(Teacher.builder()
-            .teacherId("001")
-            .firstname("Kana")
-            .surname("Momonogi")
-            .academicPosition("Lecture")
-            .department("CAMT")
-            .images(List.of("https://images.unsplash.com/photo-1687360441387-0179af118555?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=654&q=80"))
-            .build()
-        );
 
-        t2 = teacherRepository.save(Teacher.builder()
-            .teacherId("002")
-            .firstname("白桃")
-            .surname("はな")
-            .academicPosition("Lecture")
-            .department("CAMT")
-            .images(List.of("https://images.unsplash.com/photo-1521119989659-a83eee488004?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=846&q=80"))
-            .build()
-        );
+        TeacherBuilder("001","1234","Lecture","Kana","Momonogi","CAMT",List.of("https://images.unsplash.com/photo-1687360441387-0179af118555?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=654&q=80"));
+        t1 = teacherRepository.findByFirstname("Kana");
 
-        t3 = teacherRepository.save(Teacher.builder()
-                .teacherId("003")
-                .firstname("undefined teacher")
-                .surname("")
-                .academicPosition("undefined")
-                .department("undefined")
-                .images(List.of("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"))
-                .build()
-        );
+        TeacherBuilder("002","1234","Lecture","白桃","はな","CAMT",List.of("https://images.unsplash.com/photo-1521119989659-a83eee488004?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=846&q=80"));
+        t2 = teacherRepository.findByFirstname("白桃");
+
+        TeacherBuilder("003","1234","undefined","undefined","undefined","undefined",List.of("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"));
+        t3 = teacherRepository.findByFirstname("undefined");
+        
+
 
         Student tempSt;
-        tempSt = studentRepository.save(Student.builder()
-            .studentId("622115501")
-            .firstname("Alice")
-            .surname("Li")
-            .department("CAMT")
-          .images(List.of("https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"))
-            .build()
-        );
+
+        StudentBuilder("622115501","1234","Alice","Li","CAMT",List.of("https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
+        tempSt = studentRepository.findByStudentId("622115501");
+
         tempSt.setAdvisor(t1);
         t1.getAdvisee().add(tempSt);
-        CommentHistory his1 = commentHistoryRepository.save(CommentHistory.builder()
-            .adviseeId(tempSt.getId())
-            .advisorId(t1.getId())
 
-            .build()
-        );
-        CommentHistory his2 = commentHistoryRepository.save(CommentHistory.builder()
-            .adviseeId(tempSt.getId())
-            .advisorId(t2.getId())
-            .build()
-        );
-        CommentMessage msg1 = commentMessageRepository.save(CommentMessage.builder()
-            .message("Knock knock")
-            .sentFromAdvisor(false)
-            .timeSent("X")
-            .build()
-        );
-        msg1.setFrom(his1);
-        his1.getHistory().add(msg1);
-        CommentMessage msg2 = commentMessageRepository.save(CommentMessage.builder()
-            .message("Who's there?")
-            .sentFromAdvisor(true)
-            .timeSent("X")
-            .build()
-        );
-        msg2.setFrom(his1);
-        his1.getHistory().add(msg2);
-        CommentMessage msg3 = commentMessageRepository.save(CommentMessage.builder()
-            .message("It's me, Daddy~~~~~~")
-            .sentFromAdvisor(false)
-            .timeSent("X")
-            .build()
-        );
-        msg3.setFrom(his1);
-        his1.getHistory().add(msg3);
-
-        tempSt = studentRepository.save(Student.builder()
-            .studentId("622115502")
-            .firstname("Tom")
-            .surname("X")
-            .department("CAMT")
-                .images(List.of("https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg"))
-            .build()
-        );
+        StudentBuilder("622115502","1234","Bob","Wang","CAMT",List.of("https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
+        tempSt = studentRepository.findByStudentId("622115502");
         tempSt.setAdvisor(t1);
         t1.getAdvisee().add(tempSt);
-        tempSt = studentRepository.save(Student.builder()
-            .studentId("622115503")
-            .firstname("Jerry")
-            .surname("Shu")
-            .department("CAMT")
-                .images(List.of("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"))
-            .build()
-        );
+
+        StudentBuilder("622115503","1234","Jerry","Shu","CAMT",List.of("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
+        tempSt = studentRepository.findByStudentId("622115503");
         tempSt.setAdvisor(t2);
-        t2.getAdvisee().add(tempSt);
-        tempSt = studentRepository.save(Student.builder()
-            .studentId("622115504")
-            .firstname("Xukun")
-            .surname("Cai")
-            .department("CAMT")
-                .images(List.of("https://images.pexels.com/photos/697509/pexels-photo-697509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"))
-            .build()
-        );
+        t1.getAdvisee().add(tempSt);
+
+        StudentBuilder("622115504","1234","Xukun","Cai","CAMT",List.of("https://images.pexels.com/photos/697509/pexels-photo-697509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
+        tempSt = studentRepository.findByStudentId("622115504");
         tempSt.setAdvisor(t2);
-        t2.getAdvisee().add(tempSt);
+        t1.getAdvisee().add(tempSt);
+
+
+//        CommentHistory his1 = commentHistoryRepository.save(CommentHistory.builder()
+//            .adviseeId(tempSt.getId())
+//            .advisorId(t1.getId())
+//
+//            .build()
+//        );
+//        CommentHistory his2 = commentHistoryRepository.save(CommentHistory.builder()
+//            .adviseeId(tempSt.getId())
+//            .advisorId(t2.getId())
+//            .build()
+//        );
+//        CommentMessage msg1 = commentMessageRepository.save(CommentMessage.builder()
+//            .message("Knock knock")
+//            .sentFromAdvisor(false)
+//            .timeSent("X")
+//            .build()
+//        );
+//        msg1.setFrom(his1);
+//        his1.getHistory().add(msg1);
+//        CommentMessage msg2 = commentMessageRepository.save(CommentMessage.builder()
+//            .message("Who's there?")
+//            .sentFromAdvisor(true)
+//            .timeSent("X")
+//            .build()
+//        );
+//        msg2.setFrom(his1);
+//        his1.getHistory().add(msg2);
+//        CommentMessage msg3 = commentMessageRepository.save(CommentMessage.builder()
+//            .message("It's me, Daddy~~~~~~")
+//            .sentFromAdvisor(false)
+//            .timeSent("X")
+//            .build()
+//        );
+//        msg3.setFrom(his1);
+//        his1.getHistory().add(msg3);
+
+
 
 
 

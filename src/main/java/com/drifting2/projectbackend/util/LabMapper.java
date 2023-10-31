@@ -13,10 +13,6 @@ public interface LabMapper {
     List<StudentDTO> getStudentDTO(List<Student> students);
     TeacherDTO getTeacherDTO(Teacher teacher);
     List<TeacherDTO> getTeacherDTO(List<Teacher> teachers);
-    CommentMessageDTO getCommentMessageDTO(CommentMessage commentMessage);
-    List<CommentMessageDTO> getCommentMessageDTO(List<CommentMessage> commentMessage);
-    CommentHistoryDTO getCommentHistoryDTO(CommentHistory commentHistory);
-    List<CommentHistoryDTO> getCommentHistoryDTO(List<CommentHistory> commentHistory);
 
     AnnouncementDTO getAnnouncementDTO(Announcement announcement);
 

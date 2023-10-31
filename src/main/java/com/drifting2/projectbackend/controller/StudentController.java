@@ -28,7 +28,7 @@ public class StudentController {
                                             @RequestParam(value = "_page", required = false) Integer page,
                                             @RequestParam(value = "title", required = false) String title) {
                                                 
-        perPage = perPage == null ? 3 : perPage;
+        perPage = perPage == null ? studentService.getStudentSize() : perPage;
         page = page == null ? 1 : page;
         Page<Student> pageOutput;
         if (title == null) {
