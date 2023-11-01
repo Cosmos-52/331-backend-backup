@@ -184,9 +184,9 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
         TeacherBuilder("002","1234","Lecture","白桃","はな","CAMT",List.of("https://images.unsplash.com/photo-1521119989659-a83eee488004?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=846&q=80"));
         t2 = teacherRepository.findByFirstname("白桃");
 
-        TeacherBuilder("003","1234","undefined","undefined","undefined","undefined",List.of("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"));
+        TeacherBuilder("000","1234","undefined","undefined","undefined","undefined",List.of("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"));
         t3 = teacherRepository.findByFirstname("undefined");
-        
+
 
 
         Student tempSt;
@@ -205,7 +205,8 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent> {
         StudentBuilder("622115503","1234","Jerry","Shu","CAMT",List.of("https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
         tempSt = studentRepository.findByStudentId("622115503");
         tempSt.setAdvisor(t2);
-        t1.getAdvisee().add(tempSt);
+        t2.getAdvisee().add(tempSt);
+
 
         StudentBuilder("622115504","1234","Xukun","Cai","CAMT",List.of("https://images.pexels.com/photos/697509/pexels-photo-697509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
         tempSt = studentRepository.findByStudentId("622115504");

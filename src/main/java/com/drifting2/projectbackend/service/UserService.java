@@ -53,10 +53,16 @@ public class UserService {
                 .advisor(null)
                 .images(request.getImages())
                 .build();
+
+        Teacher teacher = teacherRepository.findByFirstname("undefined");
+        student.setAdvisor(teacher);
         studentRepository.save(student);
+        teacher.getAdvisee().add(student);
+        teacherRepository.save(teacher);
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
+
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)

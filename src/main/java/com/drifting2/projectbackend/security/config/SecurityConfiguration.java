@@ -34,7 +34,7 @@ public class SecurityConfiguration {
         http
                 .csrf((crsf) -> crsf.disable())
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/api/v1/auth/**","/uploadFile", "/uploadImage", "/uploadSingleImage","/api/v1/auth/logout","students","Roles","/students/searchByStudentId","/students/?id=","/advisors").permitAll()
+                    authorize.requestMatchers("/api/v1/auth/**","/uploadFile", "/uploadImage", "/uploadSingleImage","/api/v1/auth/logout","students","/students","students/{id}","Roles","/students/searchByStudentId","/advisors","/setRelation","advisors/searchByTeacherFirstname","advisors","advisors/{id}","announcements","announcements/{id}","/announcements").permitAll()
                             .anyRequest().authenticated();
                 })
 

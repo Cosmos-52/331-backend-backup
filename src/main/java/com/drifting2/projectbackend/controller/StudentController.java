@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@RestController
 @Controller
 @RequiredArgsConstructor
 public class StudentController {
@@ -41,6 +42,7 @@ public class StudentController {
         return new ResponseEntity<>(LabMapper.INSTANCE.getStudentDTO(pageOutput.getContent()),responseHeader,HttpStatus.OK);
 
     }
+
 
     @GetMapping("students/{id}")
     public ResponseEntity<?> getStudent(@PathVariable("id") Long id) {
@@ -74,6 +76,7 @@ public class StudentController {
         return ResponseEntity.ok(LabMapper.INSTANCE.getStudentDTO(student));
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/students/{id}")
     public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody Student student) {
         Student updatedStudent = studentService.update(id, student);
